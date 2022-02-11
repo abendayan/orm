@@ -1,0 +1,19 @@
+{
+  "name": "orm",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Adele Bendayan",
+  "license": "MIT",
+  "keywords": [
+    "nodejs",
+    "orm",
+    "mysql"
+  ],
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "mysql": "2.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
