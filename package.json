@@ -1,9 +1,13 @@
 {
-  "name": "orm",
+  "name": "ormius",
   "version": "0.0.1",
   "main": "index.js",
   "author": "Adele Bendayan",
   "license": "MIT",
+  "files": [
+    "index.js",
+    "lib/"
+  ],
   "keywords": [
     "nodejs",
     "orm",
