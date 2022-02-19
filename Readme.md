@@ -11,7 +11,11 @@ At this point, ormius support only mysql.
 List of features planned to get to version 1
 
 - [X] Belongs to
-- [ ] Has many, has one
+- [X] Has many
+- [ ] Has one
 - [ ] Support all data types
 - [ ] Migrate data structure
 - [ ] Migrate data
+- [ ] Jest
+- [ ] Security tests
+- [ ] Support postgres

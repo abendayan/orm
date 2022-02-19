@@ -1,10 +1,14 @@
 {
   "name": "ormius",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "index.js",
   "author": "Adele Bendayan",
   "license": "MIT",
+  "scripts": {
+    "example": "nodemon examples/example.js"
+  },
   "files": [
+    "LICENSE",
     "index.js",
     "lib/"
   ],

@@ -1,6 +1,6 @@
 const { Orm } = require('../index')
 const path = require('path')
-const { User } = require('./models/user')
+const { User } = require('./models/user/user')
 
 const orm = new Orm(path.join(__dirname, 'config.json'))
 const user = new User(orm)
