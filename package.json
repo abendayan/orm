@@ -1,11 +1,12 @@
 {
   "name": "ormius",
-  "version": "0.0.3",
+  "version": "0.0.3-latest",
   "main": "index.js",
   "author": "Adele Bendayan",
   "license": "MIT",
   "scripts": {
-    "example": "nodemon examples/example.js"
+    "example": "nodemon examples/example.js",
+    "migrate": "node lib/migrate.js"
   },
   "files": [
     "LICENSE",
@@ -22,6 +23,7 @@
     "mysql"
   ],
   "dependencies": {
+    "arg": "5.0.1",
     "fs": "0.0.1-security",
     "mysql": "2.18.1"
   },
