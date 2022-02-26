@@ -56,7 +56,7 @@ function buildModel (options) {
     const data = 'const { TYPES } = require(\'ormius\')\n' +
       `const model = {\n${model}}\n` +
       '\n' +
-      `const modelName = \'${newModelName}\'\n` +
+      `const modelName = '${newModelName}'\n` +
       '\n' +
       'module.exports = {\n' +
       '    model, modelName\n' +
@@ -99,8 +99,8 @@ if (args['--run']) {
     const configPath = path.join(sourcePath, 'config.json')
     console.log('run migrations', configPath)
     const dirs = fs.readdirSync(`${sourcePath}/${migrateFolder}`, { withFileTypes: true })
-      .filter(dirent => dirent.isDirectory())
-      .map(dirent => dirent.name)
+        .filter(dirent => dirent.isDirectory())
+        .map(dirent => dirent.name)
     console.log(dirs)
     const ormius = new Orm(configPath)
     ormius.connection.query('CREATE TABLE IF NOT EXISTS migrations (migration VARCHAR(255))', function (error, results) {

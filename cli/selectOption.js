@@ -97,7 +97,7 @@ selectOption.getPadding = (num = 10) => {
 }
 
 selectOption.createOptionMenu = () => {
-    output.write("\u001b[3J\u001b[2J\u001b[1J")
+    output.write('\u001b[3J\u001b[2J\u001b[1J')
     console.clear()
     const question = 'Choose type'
     console.log(question)
@@ -107,8 +107,8 @@ selectOption.createOptionMenu = () => {
 
     for (let i = 0; i < optionLength; i++) {
         const selectedOption = i === selectOption.selectIndex
-          ? `${cursorColor} ${selectOption.options[i]}`
-          : selectOption.options[i]
+            ? `${cursorColor} ${selectOption.options[i]}`
+            : selectOption.options[i]
         const ending = i !== optionLength-1 ? '\n' : ''
         output.write(padding + selectedOption + ending)
     }

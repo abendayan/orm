@@ -1,10 +1,10 @@
 const { TYPES } = require('../../../lib/types')
 const model = {
-    "id": {
-        "type": TYPES.INT
+    'id': {
+        'type': TYPES.INT
     },
-    "name": {
-        "type": TYPES.STRING
+    'name': {
+        'type': TYPES.STRING
     }
 }
 

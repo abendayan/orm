@@ -4,9 +4,9 @@ const { Model } = require('./lib/model')
 const { Migration } = require('./lib/migration')
 
 module.exports = {
-  Orm,
-  Model,
-  TYPES,
-  RELATION_TYPES,
-  Migration
+    Orm,
+    Model,
+    TYPES,
+    RELATION_TYPES,
+    Migration
 }
