@@ -1,6 +1,6 @@
 {
   "name": "ormius",
-  "version": "0.0.3-latest",
+  "version": "0.0.4",
   "main": "index.js",
   "author": "Adele Bendayan",
   "license": "MIT",
