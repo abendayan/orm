@@ -24,12 +24,12 @@
     "mysql"
   ],
   "dependencies": {
-    "arg": "5.0.1",
-    "fs": "0.0.1-security",
-    "mysql": "2.18.1"
+    "arg": "^5.0.1",
+    "fs": "^0.0.1-security",
+    "mysql": "^2.18.1"
   },
   "devDependencies": {
-    "eslint": "8.10.0",
-    "nodemon": "2.0.15"
+    "eslint": "^8.10.0",
+    "nodemon": "^2.0.15"
   }
 }
