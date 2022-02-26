@@ -122,7 +122,6 @@ if (args['--run']) {
         }
         const alreadyRanMigrations = results.map(({ migration }) => migration)
         const migrationsToRun = dirs.filter(migration => !alreadyRanMigrations.includes(migration))
-        console.log('====', migrationsToRun, alreadyRanMigrations)
         migrationsToRun.map(currentMigration => {
             console.log(path.join(sourcePath, `${migrateFolder}/${currentMigration}/index.js`))
             const module = require(`../${sourcePath}/migrations/${currentMigration}/index`)
