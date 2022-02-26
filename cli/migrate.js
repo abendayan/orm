@@ -42,8 +42,9 @@ function buildModel (options) {
     const migrateData = 'const { Migration } = require(\'ormius\')\n' +
       'class NewMigration extends Migration {\n' +
       '  changes() {\n' +
-      '    \n' +
+      `    this.createTable(${JSON.stringify(options.filter(({ type }) => !RELATION_TYPES.includes(type)))})\n` +
       '  }\n' +
+      '}\n\n' +
       'module.exports = NewMigration'
     fs.writeFileSync(path.join(sourcePath, `${migrateFolder}/${migrateDate}/index.js`), migrateData, { flag: 'wx' })
 
