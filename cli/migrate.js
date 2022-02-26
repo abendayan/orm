@@ -40,7 +40,11 @@ function buildModel (options) {
     ensureDirSync(`${modelFolder}/${newModelName}`)
 
     const migrateData = 'const { Migration } = require(\'ormius\')\n' +
-      'class NewMigration extends Migration {\n' +
+      'class NewMigration extends Migration {\n\n' +
+      '  constructor() {\n' +
+      '    super()\n' +
+      `    this.modelName='${newModelName}'\n` +
+      '  }\n\n' +
       '  changes() {\n' +
       `    this.createTable(${JSON.stringify(options.filter(({ type }) => !RELATION_TYPES.includes(type)))})\n` +
       '  }\n' +
