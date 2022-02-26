@@ -6,12 +6,13 @@
   "license": "MIT",
   "scripts": {
     "example": "nodemon examples/example.js",
-    "migrate": "node lib/migrate.js"
+    "migrate": "node cli/migrate.js"
   },
   "files": [
     "LICENSE",
     "index.js",
-    "lib/"
+    "lib/",
+    "cli/"
   ],
   "repository": {
     "type": "git",

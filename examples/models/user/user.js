@@ -1,7 +1,7 @@
 const { Model } = require('../../../lib/model')
 const { TYPES } = require('../../../lib/types')
 const { model: modelAccount, modelName: modelAccoutName } = require('../account/model')
-const { model, modelName} = require('./model')
+const { model, modelName } = require('./model')
 
 class User extends Model {
   constructor(ormius) {
