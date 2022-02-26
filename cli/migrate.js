@@ -114,6 +114,22 @@ if (args['--run']) {
             throw error
         }
         console.log(results)
-        selectOption.close()
+    })
+    ormius.connection.query('SELECT migration FROM migrations', function (error, results) {
+        if (error) {
+            console.log('error', error)
+            throw error
+        }
+        const alreadyRanMigrations = results.map(({ migration }) => migration)
+        const migrationsToRun = dirs.filter(migration => !alreadyRanMigrations.includes(migration))
+        console.log('====', migrationsToRun, alreadyRanMigrations)
+        migrationsToRun.map(currentMigration => {
+            console.log(path.join(sourcePath, `${migrateFolder}/${currentMigration}/index.js`))
+            const module = require(`../${sourcePath}/migrations/${currentMigration}/index`)
+            const migrationModel = new module()
+            migrationModel.setConnection(ormius.connection)
+            migrationModel.setMigrationId(currentMigration)
+            migrationModel.changes()
+        })
     })
 }
