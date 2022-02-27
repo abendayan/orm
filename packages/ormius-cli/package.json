@@ -1,6 +1,6 @@
 {
   "name": "ormius-cli",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "index.js",
   "author": "Adele Bendayan",
   "license": "MIT",
@@ -11,7 +11,7 @@
   "scripts": {
     "migrate": "node index.js",
     "build": "yarn build-clean && mkdir lib && yarn build-bin && yarn build-assets",
-    "build-bin": "mv ./index.js ./lib/ormius && chmod +x ./lib/ormius",
+    "build-bin": "cp ./index.js ./lib/ormius && chmod +x ./lib/ormius",
     "build-assets": "cp -R ./cli ./lib/cli",
     "build-clean": "rm -rf ./lib/"
   },
