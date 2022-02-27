@@ -3,9 +3,9 @@ const fs = require('fs')
 const path = require('path')
 const modelFolder = './models'
 const migrateFolder = './migrations'
-const { selectOption } = require('./selectOption')
-const { RELATION_TYPES } = require('../lib/types')
-const { Orm } = require('../lib/ormius')
+const { selectOption } = require('./cli/selectOption')
+const { RELATION_TYPES } = require('ormius/lib/types')
+const { Orm } = require('ormius/lib/ormius')
 
 const args = arg({
     // Types
@@ -104,8 +104,8 @@ if (args['--run']) {
     const configPath = path.join(sourcePath, 'config.json')
     console.log('run migrations', configPath)
     const dirs = fs.readdirSync(`${sourcePath}/${migrateFolder}`, { withFileTypes: true })
-        .filter(dirent => dirent.isDirectory())
-        .map(dirent => dirent.name)
+      .filter(dirent => dirent.isDirectory())
+      .map(dirent => dirent.name)
     console.log(dirs)
     const ormius = new Orm(configPath)
     ormius.connection.query('CREATE TABLE IF NOT EXISTS migrations (migration VARCHAR(255))', function (error, results) {

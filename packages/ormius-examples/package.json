@@ -1,0 +1,23 @@
+{
+  "name": "ormius-examples",
+  "version": "1.0.0",
+  "main": "example.js",
+  "author": "Adele Bendayan",
+  "license": "MIT",
+  "scripts": {
+    "example": "nodemon example.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abendayan/orm.git"
+  },
+  "keywords": [
+    "nodejs",
+    "orm",
+    "mysql"
+  ],
+  "dependencies": {
+    "ormius": "^0.0.6",
+    "nodemon": "^2.0.15"
+  }
+}

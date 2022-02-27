@@ -1,4 +1,5 @@
-const { TYPES } = require('../../../lib/types')
+const { TYPES } = require('ormius')
+
 const model = {
     'id': {
         'type': TYPES.INT

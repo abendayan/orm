@@ -1,5 +1,5 @@
-const { Model } = require('../../../lib/model')
-const { TYPES } = require('../../../lib/types')
+const { Model } = require('ormius')
+const { TYPES } = require('ormius')
 const { model: modelUser, modelName: modelUserName } = require('../user/model')
 const { model, modelName } = require('./model')
 

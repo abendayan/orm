@@ -1,4 +1,4 @@
-const { Orm } = require('../index')
+const { Orm } = require('ormius')
 const path = require('path')
 const { User } = require('./models/user/user')
 

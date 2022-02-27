@@ -1,6 +1,6 @@
 const readline = require('readline')
-const { TYPES } = require('../index')
-const { RELATION_TYPES } = require('../lib/types')
+const { TYPES } = require('ormius')
+const { RELATION_TYPES } = require('ormius/lib/types')
 const input = process.stdin
 const output = process.stdout
 
