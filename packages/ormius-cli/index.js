@@ -2,7 +2,6 @@
 
 const arg = require('arg')
 const fs = require('fs')
-const path = require('path')
 const modelFolder = './models'
 const migrateFolder = './migrations'
 const { selectOption } = require('./cli/selectOption')
@@ -26,7 +25,7 @@ const args = arg({
 const sourcePath = args['--source']
 function ensureDirSync (dirpath) {
     try {
-        return fs.mkdirSync(path.join(sourcePath, dirpath))
+        return fs.mkdirSync(dirpath)
     } catch (err) {
         if (err.code !== 'EEXIST') throw err
     }
@@ -52,7 +51,7 @@ function buildModel (options) {
       '  }\n' +
       '}\n\n' +
       'module.exports = NewMigration'
-    fs.writeFileSync(path.join(sourcePath, `${migrateFolder}/${migrateDate}/index.js`), migrateData, { flag: 'wx' })
+    fs.writeFileSync(`${migrateFolder}/${migrateDate}/index.js`, migrateData, { flag: 'wx' })
 
     let model = ''
     options.filter(({ type }) => !RELATION_TYPES.includes(type)).map(({ type, name }) => {
@@ -68,7 +67,7 @@ function buildModel (options) {
       'module.exports = {\n' +
       '    model, modelName\n' +
       '}'
-    fs.writeFileSync(path.join(sourcePath, `${modelFolder}/${newModelName}/model.js`), data, { flag: 'wx' })
+    fs.writeFileSync(`${modelFolder}/${newModelName}/model.js`, data, { flag: 'wx' })
 
     function capitalize(s) {
         return s[0].toUpperCase() + s.slice(1)
@@ -91,7 +90,7 @@ function buildModel (options) {
       'module.exports = {\n' +
       `  ${capitalize(newModelName)}\n` +
       '}'
-    fs.writeFileSync(path.join(sourcePath, `${modelFolder}/${newModelName}/${newModelName}.js`), dataModel, { flag: 'wx' })
+    fs.writeFileSync(`${modelFolder}/${newModelName}/${newModelName}.js`, dataModel, { flag: 'wx' })
 }
 
 if (newModelName) {
@@ -103,13 +102,12 @@ if (args['--run']) {
     if (!configArg) {
         throw new Error('Missing argument config')
     }
-    const configPath = path.join(sourcePath, 'config.json')
     console.log('run migrations', configPath)
-    const dirs = fs.readdirSync(`${sourcePath}/${migrateFolder}`, { withFileTypes: true })
+    const dirs = fs.readdirSync(migrateFolder, { withFileTypes: true })
       .filter(dirent => dirent.isDirectory())
       .map(dirent => dirent.name)
     console.log(dirs)
-    const ormius = new Orm(configPath)
+    const ormius = new Orm(sourcePath)
     ormius.connection.query('CREATE TABLE IF NOT EXISTS migrations (migration VARCHAR(255))', function (error, results) {
         if (error) {
             console.log('error', error)
@@ -125,8 +123,7 @@ if (args['--run']) {
         const alreadyRanMigrations = results.map(({ migration }) => migration)
         const migrationsToRun = dirs.filter(migration => !alreadyRanMigrations.includes(migration))
         migrationsToRun.map(currentMigration => {
-            console.log(path.join(sourcePath, `${migrateFolder}/${currentMigration}/index.js`))
-            const module = require(`../${sourcePath}/migrations/${currentMigration}/index`)
+            const module = require(`./migrations/${currentMigration}/index`)
             const migrationModel = new module()
             migrationModel.setConnection(ormius.connection)
             migrationModel.setMigrationId(currentMigration)
