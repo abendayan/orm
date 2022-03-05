@@ -7,6 +7,7 @@ class Orm {
             throw new Error('The config file is required')
         }
         const { deferConnection } = params
+
         this.config = JSON.parse(fs.readFileSync(configFile, 'utf8'))
         this.connection = mysql.createConnection(this.config)
         if (!deferConnection) {
@@ -16,9 +17,12 @@ class Orm {
 
     connect() {
         const self = this
-        this.connection.connect(function(err) {
-            if (err) throw err
-            console.log('connected as id ' + self.connection.threadId)
+
+        this.connection.connect((err) => {
+            if (err) {
+                throw err
+            }
+            console.log(`connected as id ${  self.connection.threadId}`)
         })
     }
 

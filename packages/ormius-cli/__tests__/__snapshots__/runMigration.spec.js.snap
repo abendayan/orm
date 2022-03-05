@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`run migration test runMigration 1`] = `
+Array [
+  Array [
+    "CREATE TABLE IF NOT EXISTS migrations (migration VARCHAR(255))",
+    [Function],
+  ],
+  Array [
+    "SELECT migration FROM migrations",
+    [Function],
+  ],
+]
+`;

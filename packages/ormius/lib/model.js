@@ -43,11 +43,12 @@ class Model {
         return this
     }
 
-    execute = async () => {
+    execute = async() => {
         const result = await this.#query.execute()
+
         this.#query.clean()
         if (Array.isArray(result)) {
-            return result.map(oneResult => {
+            return result.map((oneResult) => {
                 return new this.constructor(this.#connection).setValues(oneResult)
             })
         } else {

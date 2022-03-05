@@ -1,6 +1,6 @@
 {
   "name": "ormius-cli",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "index.js",
   "author": "Adele Bendayan",
   "license": "MIT",
@@ -13,7 +13,9 @@
     "build": "yarn build-clean && mkdir lib && yarn build-bin && yarn build-assets",
     "build-bin": "cp ./index.js ./lib/ormius && chmod +x ./lib/ormius",
     "build-assets": "cp -R ./cli ./lib/cli",
-    "build-clean": "rm -rf ./lib/"
+    "build-clean": "rm -rf ./lib/",
+    "test": "jest --config ./jest.config.json",
+    "test:watch": "jest --config ./jest.config.json --watch"
   },
   "files": [
     "lib"
@@ -35,6 +37,9 @@
     "fs": "^0.0.1-security"
   },
   "peerDependencies": {
-    "ormius": ">= 0.0.6"
+    "ormius": ">= 0.0.7"
+  },
+  "devDependencies": {
+    "jest": "^27.5.1"
   }
 }

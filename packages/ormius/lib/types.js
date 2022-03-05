@@ -1,6 +1,7 @@
 const TYPES = {
     INT: 'int',
     STRING: 'string',
+    BOOLEAN: 'boolean',
     BELONGS_TO: 'belongs_to',
     HAS_MANY: 'has_many'
 }

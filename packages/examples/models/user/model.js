@@ -1,17 +1,17 @@
 const { TYPES } = require('../../../ormius/lib/types')
 
 const model = {
-    'id': {
-        'type': TYPES.INT
+    id: {
+        type: TYPES.INT
     },
-    'email': {
-        'type': TYPES.STRING
+    email: {
+        type: TYPES.STRING
     },
-    'name': {
-        'type': TYPES.STRING
+    name: {
+        type: TYPES.STRING
     },
-    'accountId': {
-        'type': TYPES.INT
+    accountId: {
+        type: TYPES.INT
     }
 }
 

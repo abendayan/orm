@@ -12,7 +12,7 @@ class Query {
         this.joins = []
     }
 
-    clean () {
+    clean() {
         this.currentQuery = ''
         this.conditions = []
         this.selectColumns = this.allowedColumns()
@@ -21,24 +21,26 @@ class Query {
         this.joins = []
     }
 
-    where (column, condition) {
+    where(column, condition) {
         let selectQuery
         let currentCondition
+
         switch (this.model[column].type) {
-        case TYPES.STRING:
-        case TYPES.INT:
-            selectQuery = 'SELECT ?? FROM ?? WHERE ??=?'
-            currentCondition = [this.selectColumns, this.modelName, column, condition]
-            break
-        case TYPES.BELONGS_TO:
-            selectQuery = `SELECT ??, ${this.allowedColumns(this.model[column].parent.class.model, this.model[column].parent.class.modelName).join(',')} FROM ?? LEFT JOIN ?? ON ??=?? WHERE ??=?`
-            currentCondition = [this.selectColumns, this.modelName, this.model[column].parent.class.modelName,
-                `${this.model[column].parent.class.modelName}.${this.model[column].parent.attribute}`,
-                `${this.modelName}.${this.model[column].from}`,
-                `${this.model[column].parent.class.modelName}.${this.model[column].parent.attribute}`, condition]
-            break
-        default:
-            throw new Error(`Not supported type ${this.model[column].type}`)
+            case TYPES.STRING:
+            case TYPES.INT:
+            case TYPES.BOOLEAN:
+                selectQuery = 'SELECT ?? FROM ?? WHERE ??=?'
+                currentCondition = [this.selectColumns, this.modelName, column, condition]
+                break
+            case TYPES.BELONGS_TO:
+                selectQuery = `SELECT ??, ${this.allowedColumns(this.model[column].parent.class.model, this.model[column].parent.class.modelName).join(',')} FROM ?? LEFT JOIN ?? ON ??=?? WHERE ??=?`
+                currentCondition = [this.selectColumns, this.modelName, this.model[column].parent.class.modelName,
+                    `${this.model[column].parent.class.modelName}.${this.model[column].parent.attribute}`,
+                    `${this.modelName}.${this.model[column].from}`,
+                    `${this.model[column].parent.class.modelName}.${this.model[column].parent.attribute}`, condition]
+                break
+            default:
+                throw new Error(`Not supported type ${this.model[column].type}`)
         }
         if (this.currentQuery !== '') {
             this.currentQuery = `${this.currentQuery} AND ${selectQuery}`
@@ -52,14 +54,14 @@ class Query {
         return this
     }
 
-    findBy (column, condition) {
+    findBy(column, condition) {
         this.returnNumber = 0
         this.where(column, condition)
         this.currentQuery = `${this.currentQuery} LIMIT 1`
         return this
     }
 
-    updateBy (conditions, values) {
+    updateBy(conditions, values) {
         this.currentQuery = 'UPDATE ?? SET ? WHERE ?'
         this.conditions = [this.modelName, values, conditions]
         return this
@@ -67,26 +69,28 @@ class Query {
 
     select(fields) {
         this.selectColumns = this.allowedColumns(fields)
-        this.selectColumnsIds.forEach(id => {
+        this.selectColumnsIds.forEach((id) => {
             this.conditions[id] = this.selectColumns
         })
         console.log(this.currentQuery)
         return this
     }
 
-    allowedColumns (fields, modelName = this.modelName) {
+    allowedColumns(fields, modelName = this.modelName) {
         const otherModel = modelName !== this.modelName
         let currentFields
+
         if (otherModel) {
             currentFields = Object.keys(fields)
         } else {
             currentFields = fields || Object.keys(this.model)
         }
         const model = (otherModel) ? fields : this.model
-        return currentFields.filter(field => {
+
+        return currentFields.filter((field) => {
             // otherModel ? `${modelName}.${field} as ${modelName}_${field}` :
             return !RELATION_TYPES.includes(model[field].type)
-        }).map(field => {
+        }).map((field) => {
             if (otherModel) {
                 this.joins.push(`${modelName}_${field}`)
             }
@@ -94,10 +98,11 @@ class Query {
         })
     }
 
-    create (fields) {
+    create(fields) {
         this.clean()
         const filteredFields = {}
-        Object.keys(fields).filter(filter => this.allowedColumns().includes(filter)).forEach(field => {
+
+        Object.keys(fields).filter((filter) => this.allowedColumns().includes(filter)).forEach((field) => {
             filteredFields[field] = fields[field]
         })
         this.currentQuery = 'INSERT INTO ?? SET ?'
@@ -111,19 +116,21 @@ class Query {
             throw new Error('Query not formed')
         }
         const self = this
+
         console.log('executed query', this.currentQuery, this.conditions)
-        return new Promise(function(resolve, reject) {
-            self.connection.query(self.currentQuery, self.conditions, function (error, results) {
+        return new Promise((resolve, reject) => {
+            self.connection.query(self.currentQuery, self.conditions, (error, results) => {
                 if (error) {
                     reject(error)
                 }
-                const filtered = results.map(result => {
+                const filtered = results.map((result) => {
                     return Object.keys(result).reduce((obj, key) => {
-                        if(!self.joins.includes(key)) {
+                        if (!self.joins.includes(key)) {
                             obj[key] = result[key]
                             return obj
                         } else {
                             const [object, identity] = key.split('_')
+
                             if (!obj[object]) {
                                 obj[object] = {}
                             }
@@ -132,6 +139,7 @@ class Query {
                         }
                     }, {})
                 })
+
                 if (self.returnNumber === 0) {
                     resolve(filtered[0])
                 } else {

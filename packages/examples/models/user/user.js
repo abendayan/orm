@@ -7,18 +7,19 @@ class User extends Model {
     constructor(ormius) {
         const _model = {
             ...model,
-            'account': {
-                'type': TYPES.BELONGS_TO,
-                'parent': {
-                    'class': {
-                        'model': modelAccount,
-                        'modelName': modelAccoutName
+            account: {
+                type: TYPES.BELONGS_TO,
+                parent: {
+                    class: {
+                        model: modelAccount,
+                        modelName: modelAccoutName
                     },
-                    'attribute': 'id'
+                    attribute: 'id'
                 },
-                'from': 'accountId'
+                from: 'accountId'
             }
         }
+
         super(modelName, _model, ormius)
         this.model = model
     }
