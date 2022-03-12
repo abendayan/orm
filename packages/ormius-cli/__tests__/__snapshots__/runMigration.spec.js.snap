@@ -12,3 +12,28 @@ Array [
   ],
 ]
 `;
+
+exports[`run migration test runMigration with error 1`] = `
+Array [
+  Array [
+    "CREATE TABLE IF NOT EXISTS migrations (migration VARCHAR(255))",
+    [Function],
+  ],
+  Array [
+    "SELECT migration FROM migrations",
+    [Function],
+  ],
+  Array [
+    "CREATE TABLE IF NOT EXISTS migrations (migration VARCHAR(255))",
+    [Function],
+  ],
+  Array [
+    "CREATE TABLE IF NOT EXISTS migrations (migration VARCHAR(255))",
+    [Function],
+  ],
+  Array [
+    "SELECT migration FROM migrations",
+    [Function],
+  ],
+]
+`;

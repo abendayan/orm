@@ -3,6 +3,7 @@
   "coverageReporters": [
     "clover",
     "lcov",
+    "json-summary",
     "text-summary"
   ],
   "coveragePathIgnorePatterns": [
@@ -14,5 +15,10 @@
   "collectCoverageFrom": [
     "index.js",
     "cli/**/*.js"
-  ]
+  ],
+  "coverageThreshold": {
+    "global": {
+      "lines": 80
+    }
+  }
 }

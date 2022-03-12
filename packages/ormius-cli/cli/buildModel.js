@@ -70,5 +70,6 @@ const generateModel = (newModelName) => {
 }
 
 module.exports = {
-    generateModel
+    generateModel,
+    buildModel
 }

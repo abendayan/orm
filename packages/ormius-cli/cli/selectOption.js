@@ -92,7 +92,7 @@ selectOption.close = () => {
 selectOption.getPadding = (num = 10) => {
     let text = ' '
 
-    for (let i = 0; i < num.length; i++) {
+    for (let i = 0; i < num; i++) {
         text += ' '
     }
     return text
@@ -117,5 +117,6 @@ selectOption.createOptionMenu = () => {
 }
 
 module.exports = {
-    selectOption
+    selectOption,
+    keyPressedHandler
 }

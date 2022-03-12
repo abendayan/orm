@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`selectOption createOptionMenu 1`] = `
+Array [
+  Array [
+    "[3J[2J[1J",
+  ],
+  Array [
+    "                     [32m*[0m int
+",
+  ],
+  Array [
+    "                     string
+",
+  ],
+  Array [
+    "                     boolean",
+  ],
+]
+`;
+
+exports[`selectOption keyPressedHandler escape 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      Array [],
+      "modelTest",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": Array [],
+    },
+  ],
+}
+`;
+
+exports[`selectOption start 1`] = `
+Array [
+  Array [
+    "keypress",
+    [Function],
+  ],
+]
+`;

@@ -1,6 +1,17 @@
+let mockError = null
+let mockErrorSecond = null
+
+const mockCallback = (query, callback) => {
+    if (query === 'CREATE TABLE IF NOT EXISTS migrations (migration VARCHAR(255))') {
+        callback(mockError, [])
+    } else if (query === 'SELECT migration FROM migrations') {
+        callback(mockErrorSecond, [{ migration: 'test' }])
+    }
+}
+
 const mockOrmius = {
     connection: {
-        query: jest.fn()
+        query: jest.fn((query, callback) => mockCallback(query, callback))
     }
 }
 
@@ -23,6 +34,10 @@ jest.mock('fs', () => ({
 }))
 
 jest.mock('../cli/migrations/test/index', () => (
+    jest.fn(() => mockMigration)
+), { virtual: true })
+
+jest.mock('../cli/migrations/migration/index', () => (
     jest.fn(() => mockMigration)
 ), { virtual: true })
 
@@ -53,5 +68,27 @@ describe('run migration test', () => {
     test('runMigration', () => {
         runMigration('config.json')
         expect(mockOrmius.connection.query.mock.calls).toMatchSnapshot()
+    })
+
+    test('runMigration with error', () => {
+        mockError = 'Error'
+        try {
+            runMigration('config.json')
+            expect(false).toBe(true)
+        } catch (e) {
+            expect(e).toBe('Error')
+        }
+    })
+
+    test('runMigration with error', () => {
+        mockError = null
+        mockErrorSecond = 'Error'
+        try {
+            runMigration('config.json')
+            expect(false).toBe(true)
+        } catch (e) {
+            expect(e).toBe('Error')
+            expect(mockOrmius.connection.query.mock.calls).toMatchSnapshot()
+        }
     })
 })
