@@ -37,6 +37,7 @@ describe('utils test', () => {
             ensureDirSync('error')
             expect(false).toBe(true)
         } catch (e) {
+            console.log('error====', e.message)
             expect(e.message).toBe('error')
         }
     })

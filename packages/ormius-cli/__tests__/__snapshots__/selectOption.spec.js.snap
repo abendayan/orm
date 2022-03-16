@@ -36,6 +36,15 @@ exports[`selectOption keyPressedHandler escape 1`] = `
 }
 `;
 
+exports[`selectOption keyPressedHandler return 1`] = `
+Array [
+  Array [
+    "Type name for entry of type int> ",
+    [Function],
+  ],
+]
+`;
+
 exports[`selectOption start 1`] = `
 Array [
   Array [

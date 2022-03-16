@@ -17,15 +17,17 @@ selectOption.selector = '*'
 selectOption.selects = []
 selectOption.inSelectType = true
 
+const handleLine = (line) => {
+    selectOption.selects[selectOption.selects.length - 1].name = line
+    selectOption.inSelectType = true
+    input.setRawMode(true)
+    input.resume()
+    selectOption.selectIndex = 0
+    selectOption.createOptionMenu()
+}
+
 const askForName = (type) => {
-    rl.question(`Type name for entry of type ${type}> `, (line) => {
-        selectOption.selects[selectOption.selects.length - 1].name = line
-        selectOption.inSelectType = true
-        input.setRawMode(true)
-        input.resume()
-        selectOption.selectIndex = 0
-        selectOption.createOptionMenu()
-    })
+    rl.question(`Type name for entry of type ${type}> `, handleLine)
 }
 
 const keyPressedHandler = (_, key) => {
@@ -118,5 +120,6 @@ selectOption.createOptionMenu = () => {
 
 module.exports = {
     selectOption,
-    keyPressedHandler
+    keyPressedHandler,
+    handleLine
 }

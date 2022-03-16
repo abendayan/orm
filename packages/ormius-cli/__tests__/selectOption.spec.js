@@ -1,16 +1,18 @@
+const mockQuestion = jest.fn().mockImplementation((object) => object)
+
 jest.mock('readline', () => ({
     createInterface: jest.fn().mockReturnValue({
-        question: jest.fn().mockImplementationOnce((_questionTest, cb) => cb('y')),
-        close: jest.fn().mockImplementationOnce(() => undefined)
+        question: mockQuestion,
+        close: jest.fn().mockImplementation(() => {})
     }),
     emitKeypressEvents: jest.fn()
 }))
 
-const { selectOption, keyPressedHandler } = require('../cli/selectOption')
+const { selectOption, keyPressedHandler, handleLine } = require('../cli/selectOption')
 
 describe('selectOption', () => {
-    afterEach(() => {
-        jest.clearAllMocks()
+    beforeEach(() => {
+        jest.resetAllMocks()
     })
 
     test('getPadding', () => {
@@ -78,5 +80,24 @@ describe('selectOption', () => {
         keyPressedHandler('key', { name: 'escape' })
         expect(close).toHaveBeenCalled()
         expect(callback).toMatchSnapshot()
+    })
+
+    test('keyPressedHandler return', () => {
+        process.stdin.setRawMode = jest.fn()
+        keyPressedHandler('key', { name: 'return' })
+        expect(mockQuestion.mock.calls).toMatchSnapshot()
+        expect(selectOption.selects).toEqual([{ type: selectOption.options[0] }])
+    })
+
+    test('handleLine', () => {
+        const createOptionMenu = jest.spyOn(selectOption, 'createOptionMenu').mockImplementation(() => {})
+        const resume = jest.spyOn(process.stdin, 'resume').mockImplementation(() => {})
+
+        process.stdin.setRawMode = jest.fn()
+        selectOption.selects[0] = { type: 'type' }
+        handleLine('test')
+        expect(resume).toHaveBeenCalled()
+        expect(selectOption.selects[0]).toEqual({ type: 'type', name: 'test' })
+        expect(createOptionMenu).toHaveBeenCalled()
     })
 })
