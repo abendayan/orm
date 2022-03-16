@@ -13,7 +13,6 @@
   ],
   "collectCoverage": true,
   "collectCoverageFrom": [
-    "index.js",
     "cli/**/*.js"
   ],
   "coverageThreshold": {
