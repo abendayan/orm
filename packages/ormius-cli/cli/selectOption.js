@@ -79,10 +79,7 @@ selectOption.start = () => {
     input.setRawMode(true)
     input.resume()
     input.on('keypress', keyPressedHandler)
-
-    if (selectOption.selectIndex >= 0) {
-        selectOption.createOptionMenu()
-    }
+    selectOption.createOptionMenu()
 }
 
 selectOption.close = () => {
@@ -121,5 +118,6 @@ selectOption.createOptionMenu = () => {
 module.exports = {
     selectOption,
     keyPressedHandler,
-    handleLine
+    handleLine,
+    ansiColors
 }

@@ -19,6 +19,23 @@ Array [
 ]
 `;
 
+exports[`selectOption keyPressedHandler ctr c 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      Array [],
+      "modelTest",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": Array [],
+    },
+  ],
+}
+`;
+
 exports[`selectOption keyPressedHandler escape 1`] = `
 [MockFunction] {
   "calls": Array [
