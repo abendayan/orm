@@ -1,0 +1,17 @@
+{
+  "testEnvironment": "node",
+  "coverageReporters": [
+    "clover",
+    "lcov",
+    "json-summary",
+    "text-summary"
+  ],
+  "coveragePathIgnorePatterns": [
+    "/node_modules/",
+    "/__tests__/"
+  ],
+  "collectCoverage": true,
+  "collectCoverageFrom": [
+    "lib/**/*.js"
+  ]
+}

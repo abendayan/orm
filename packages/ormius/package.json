@@ -8,6 +8,11 @@
     "index.js",
     "lib/"
   ],
+  "scripts": {
+    "test": "jest --config ./jest.config.json",
+    "test:watch": "jest --config ./jest.config.json --watch",
+    "make-badges": "yarn test && npx istanbul-badges-readme"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/abendayan/orm.git"

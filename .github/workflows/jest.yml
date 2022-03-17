@@ -9,3 +9,5 @@ jobs:
         run: yarn
       - name: Run tests in ormius-cli
         run: yarn workspace ormius-cli test
+      - name: Run tests in ormius
+        run: yarn workspace ormius test

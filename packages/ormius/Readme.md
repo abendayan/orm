@@ -1,3 +1,7 @@
+![Statements](https://img.shields.io/badge/statements-11.76%25-red.svg?style=flat)
+![Branches](https://img.shields.io/badge/branches-6.12%25-red.svg?style=flat)
+![Functions](https://img.shields.io/badge/functions-22.5%25-red.svg?style=flat)
+![Lines](https://img.shields.io/badge/lines-11.25%25-red.svg?style=flat)
 # Ormius
 Simple Orm for mysql
 There is a lot of orm written for nodejs out there, so why one more? Because I can.
