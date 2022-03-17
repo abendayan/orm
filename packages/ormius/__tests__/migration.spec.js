@@ -10,7 +10,9 @@ describe('migration', () => {
 
     test('markAsRan', () => {
         const migration = new Migration()
-        const connectionMock = { query: jest.fn() }
+        const connectionMock = { query: jest.fn((query, migrationId, cb) => {
+            cb()
+        }) }
 
         migration.setMigrationId('migrationId')
         migration.setConnection(connectionMock)
@@ -38,7 +40,9 @@ describe('migration', () => {
         const migration = new Migration()
 
         migration.modelName = 'modelName'
-        const connectionMock = { query: jest.fn() }
+        const connectionMock = { query: jest.fn((query, cb) => {
+            cb()
+        }) }
 
         migration.setMigrationId('migrationId')
         migration.setConnection(connectionMock)
@@ -68,7 +72,9 @@ describe('migration', () => {
         const migration = new Migration()
 
         migration.modelName = 'modelName'
-        const connectionMock = { query: jest.fn() }
+        const connectionMock = { query: jest.fn((query, cb) => {
+            cb()
+        }) }
 
         migration.setMigrationId('migrationId')
         migration.setConnection(connectionMock)
