@@ -62,8 +62,31 @@ class Query {
     }
 
     updateBy(conditions, values) {
-        this.currentQuery = 'UPDATE ?? SET ? WHERE ?'
-        this.conditions = [this.modelName, values, conditions]
+        this.currentQuery = 'UPDATE ?? SET '
+        this.conditions = [this.modelName]
+        Object.keys(values).reduce((currentQuery, valueKey) => {
+            if ([TYPES.BOOLEAN, TYPES.INT, TYPES.STRING].includes(this.model[valueKey].type)) {
+                if (currentQuery !== '') {
+                    this.currentQuery += ', '
+                }
+                currentQuery += `${valueKey} = '${values[valueKey]}'`
+                this.currentQuery += `${valueKey} = ?`
+                this.conditions.push(values[valueKey])
+            }
+            return currentQuery
+        }, '')
+        this.currentQuery += ' WHERE '
+        Object.keys(conditions).reduce((currentQuery, condition) => {
+            if ([TYPES.BOOLEAN, TYPES.INT, TYPES.STRING].includes(this.model[condition].type)) {
+                if (currentQuery !== '') {
+                    this.currentQuery += ', '
+                }
+                currentQuery += `${condition} = '${conditions[condition]}'`
+                this.currentQuery += `${condition} = ?`
+                this.conditions.push(conditions[condition])
+            }
+            return currentQuery
+        }, '')
         return this
     }
 
