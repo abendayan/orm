@@ -17,7 +17,7 @@
     "mysql"
   ],
   "dependencies": {
-    "ormius": "^0.0.6",
+    "ormius": "^0.0.9",
     "nodemon": "^2.0.15"
   }
 }

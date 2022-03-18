@@ -2621,13 +2621,6 @@ optionator@^0.9.1:
     type-check "^0.4.0"
     word-wrap "^1.2.3"
 
-ormius@^0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/ormius/-/ormius-0.0.6.tgz#f69bda20d3d71495d5a309fb5ce0ab39281399bd"
-  integrity sha512-jM85E59TFE5T8bfX/6ku8kGsQeWHao8NU18bbk/LiH/gdZNw9V6W+o3G79GZ5Dby8dE3OJlyODqU/a2RVxVcow==
-  dependencies:
-    mysql "^2.18.1"
-
 p-cancelable@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/p-cancelable/-/p-cancelable-1.1.0.tgz#d078d15a3af409220c886f1d9a0ca2e441ab26cc"
