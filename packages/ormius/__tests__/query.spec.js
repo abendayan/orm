@@ -121,10 +121,67 @@ describe('query', () => {
         expect(query.conditions).toEqual(['modelName', 'test2@test.com', 'test@test.com'])
     })
 
+    test('updateBy multiple values', () => {
+        const query = new Query('modelName', {}, model)
+
+        query.updateBy({ email: 'test@test.com' }, { email: 'test2@test.com', name: 'newName', wrongType: 'test' })
+        expect(query.currentQuery).toEqual('UPDATE ?? SET email = ?, name = ? WHERE email = ?')
+        expect(query.conditions).toEqual(['modelName', 'test2@test.com', 'newName', 'test@test.com'])
+    })
+
+    test('updateBy multiple conditions', () => {
+        const query = new Query('modelName', {}, model)
+
+        query.updateBy({ email: 'test@test.com', name: 'condition', wrongType: 'test' }, { email: 'test2@test.com' })
+        expect(query.currentQuery).toEqual('UPDATE ?? SET email = ? WHERE email = ?, name = ?')
+        expect(query.conditions).toEqual(['modelName', 'test2@test.com', 'test@test.com', 'condition'])
+    })
+
     test('select', () => {
         const query = new Query('modelName', {}, model)
 
         query.select(['email', 'id'])
         expect(query.selectColumns).toEqual(['modelName.email', 'modelName.id'])
+    })
+
+    test('select with selectColumnsIds', () => {
+        const query = new Query('modelName', {}, model)
+
+        query.selectColumnsIds = [1]
+        query.conditions = ['test', 'changed']
+        query.select(['email', 'id'])
+        expect(query.selectColumns).toEqual(['modelName.email', 'modelName.id'])
+        expect(query.conditions).toEqual(['test', ['modelName.email', 'modelName.id']])
+    })
+
+    test('create', () => {
+        const query = new Query('modelName', {}, model)
+
+        query.create({ email: 'email@email.com' })
+        expect(query.conditions).toEqual(['modelName', { email: 'email@email.com' }])
+        expect(query.currentQuery).toEqual('INSERT INTO ?? SET ?')
+    })
+
+    test('execute without formed query', async() => {
+        const query = new Query('modelName', {}, model)
+
+        try {
+            await query.execute()
+            expect(false).toBe(true)
+        } catch (e) {
+            expect(e.message).toBe('Query not formed')
+        }
+    })
+
+    test('execute with empty query', async() => {
+        const query = new Query('modelName', {}, model)
+
+        query.currentQuery = null
+        try {
+            await query.execute()
+            expect(false).toBe(true)
+        } catch (e) {
+            expect(e.message).toBe('Query not formed')
+        }
     })
 })

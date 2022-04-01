@@ -13,5 +13,10 @@
   "collectCoverage": true,
   "collectCoverageFrom": [
     "lib/**/*.js"
-  ]
+  ],
+  "coverageThreshold": {
+    "global": {
+      "lines": 80
+    }
+  }
 }

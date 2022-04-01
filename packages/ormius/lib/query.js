@@ -125,7 +125,7 @@ class Query {
         this.clean()
         const filteredFields = {}
 
-        Object.keys(fields).filter((filter) => this.allowedColumns().includes(filter)).forEach((field) => {
+        Object.keys(fields).filter((filter) => this.allowedColumns().includes(`${this.modelName}.${filter}`)).forEach((field) => {
             filteredFields[field] = fields[field]
         })
         this.currentQuery = 'INSERT INTO ?? SET ?'
