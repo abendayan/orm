@@ -184,4 +184,57 @@ describe('query', () => {
             expect(e.message).toBe('Query not formed')
         }
     })
+
+    test('execute with error', async() => {
+        const connection = { query: jest.fn((query, conditions, cb) => {
+            cb('error')
+        }) }
+        const query = new Query('modelName', connection, model)
+
+        query.currentQuery = 'test query'
+        try {
+            await query.execute()
+            expect(false).toBe(true)
+        } catch (e) {
+            expect(e).toBe('error')
+        }
+    })
+
+    test('execute with simple result', async() => {
+        const connection = { query: jest.fn((query, conditions, cb) => {
+            cb(null, [{ email: 'test@test.com' }])
+        }) }
+        const query = new Query('modelName', connection, model)
+
+        query.currentQuery = 'test query'
+        const result = await query.execute()
+
+        expect(result).toEqual([{ email: 'test@test.com' }])
+    })
+
+    test('execute with only one result', async() => {
+        const connection = { query: jest.fn((query, conditions, cb) => {
+            cb(null, [{ email: 'test@test.com' }])
+        }) }
+        const query = new Query('modelName', connection, model)
+
+        query.returnNumber = 0
+        query.currentQuery = 'test query'
+        const result = await query.execute()
+
+        expect(result).toEqual({ email: 'test@test.com' })
+    })
+
+    test('execute with join', async() => {
+        const connection = { query: jest.fn((query, conditions, cb) => {
+            cb(null, [{ email: 'test@test.com', ['account_id']: 33, ['account_name']: 'test' }])
+        }) }
+        const query = new Query('modelName', connection, model)
+
+        query.currentQuery = 'test query'
+        query.joins = ['account_id', 'account_name']
+        const result = await query.execute()
+
+        expect(result).toEqual([{ email: 'test@test.com', account: { id: 33, name: 'test' } }])
+    })
 })
