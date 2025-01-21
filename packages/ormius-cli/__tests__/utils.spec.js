@@ -19,7 +19,7 @@ describe('utils test', () => {
     test('does not throw error if folder does not exist', () => {
         try {
             ensureDirSync('test')
-        } catch (e) {
+        } catch {
             expect(false).toBe(true)
         }
     })
@@ -27,7 +27,7 @@ describe('utils test', () => {
     test('does not throw error if folder exist', () => {
         try {
             ensureDirSync('exist')
-        } catch (e) {
+        } catch {
             expect(false).toBe(true)
         }
     })
