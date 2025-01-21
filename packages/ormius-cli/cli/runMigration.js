@@ -1,8 +1,8 @@
-const fs = require('fs')
-const { Orm } = require('ormius/lib/ormius')
-const { FOLDERS } = require('./utils')
+import fs from 'fs'
+import { Orm } from 'ormius/lib/ormius'
+import { FOLDERS } from './utils'
 
-const runMigration = (configArg) => {
+export const runMigration = (configArg) => {
     if (!configArg) {
         throw new Error('Missing argument config')
     }
@@ -35,7 +35,7 @@ const runMigration = (configArg) => {
     })
 }
 
-const executeMigration = (connection, migration) => {
+export const executeMigration = (connection, migration) => {
     const Module = require(`${FOLDERS.MIGRATION}/${migration}/index`)
     const migrationModel = new Module()
 
@@ -43,9 +43,4 @@ const executeMigration = (connection, migration) => {
     migrationModel.setMigrationId(migration)
     migrationModel.changes()
     migrationModel.markAsRan()
-}
-
-module.exports = {
-    runMigration,
-    executeMigration
 }

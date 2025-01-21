@@ -1,86 +1,83 @@
-const mockConnection = {
-    connect: jest.fn((cb) => {
-        cb()
-    }),
-    end: jest.fn(),
-    threadId: 'threadId'
-}
+import { Orm } from '../lib/ormius'
+import fs from 'fs'
+import mysql from 'mysql'
 
-const mockCreateConnection = jest.fn(() => {
-    return mockConnection
-})
+jest.mock('fs')
+jest.mock('mysql')
 
-jest.mock('mysql', () => ({
-    createConnection: mockCreateConnection
-}))
+describe('Orm Class', () => {
+    let mockConnection
 
-jest.mock('fs', () => ({
-    readFileSync: jest.fn(() => {
-        return '{\n' +
-          '  "user": "user",\n' +
-          '  "password": "password",\n' +
-          '  "host": "127.0.0.1",\n' +
-          '  "port": 3306,\n' +
-          '  "database": "database"\n' +
-          '}'
-    })
-}))
-
-const { Orm } = require('../lib/ormius')
-
-describe('ormius', () => {
     beforeEach(() => {
+        // Mock the MySQL connection object
+        mockConnection = {
+            connect: jest.fn((callback) => callback(null)),
+            end: jest.fn(),
+            threadId: 12345
+        }
+        mysql.createConnection = jest.fn(() => mockConnection)
+
+        // Mock fs readFileSync
+        fs.readFileSync.mockImplementation((path) => {
+            if (path === 'validConfig.json') {
+                return JSON.stringify({
+                    host: 'localhost',
+                    user: 'root',
+                    password: 'password',
+                    database: 'test_db'
+                })
+            }
+            throw new Error('File not found')
+        })
+    })
+
+    afterEach(() => {
         jest.clearAllMocks()
     })
 
-    test('without defer connection', () => {
-        new Orm('file')
+    test('should throw an error if configFile is not provided', () => {
+        expect(() => new Orm()).toThrow('The config file is required')
+    })
 
-        expect(mockCreateConnection).toHaveBeenCalled()
+    test('should read the configuration file and create a MySQL connection', () => {
+        new Orm('validConfig.json')
+
+        expect(fs.readFileSync).toHaveBeenCalledWith('validConfig.json', 'utf8')
+        expect(mysql.createConnection).toHaveBeenCalledWith({
+            host: 'localhost',
+            user: 'root',
+            password: 'password',
+            database: 'test_db'
+        })
         expect(mockConnection.connect).toHaveBeenCalled()
     })
 
-    test('with defer connection', () => {
-        new Orm('file', { deferConnection: true })
+    test('should not connect if deferConnection is true', () => {
+        new Orm('validConfig.json', { deferConnection: true })
 
-        expect(mockCreateConnection).toHaveBeenCalled()
+        expect(fs.readFileSync).toHaveBeenCalledWith('validConfig.json', 'utf8')
+        expect(mysql.createConnection).toHaveBeenCalled()
         expect(mockConnection.connect).not.toHaveBeenCalled()
     })
 
-    test('without config file', () => {
-        try {
-            new Orm()
-            expect(false).toBe(true)
-        } catch (e) {
-            expect(e.message).toBe('The config file is required')
-        }
+    test('should throw an error if MySQL connection fails', () => {
+        mockConnection.connect.mockImplementationOnce((callback) =>
+            callback(new Error('Connection error'))
+        )
+
+        expect(() => new Orm('validConfig.json')).toThrow('Connection error')
     })
 
-    test('close', () => {
-        const ormius = new Orm('file')
+    test('should log connection thread ID on successful connection', () => {
+        console.log = jest.fn()
+        new Orm('validConfig.json')
+        expect(console.log).toHaveBeenCalledWith('connected as id 12345')
+    })
 
-        ormius.close()
+    test('should close the connection when close() is called', () => {
+        const orm = new Orm('validConfig.json')
+
+        orm.close()
         expect(mockConnection.end).toHaveBeenCalled()
-    })
-
-    test('connect', () => {
-        const ormius = new Orm('file', { deferConnection: true })
-
-        ormius.connect()
-        expect(mockConnection.connect.mock.calls).toMatchSnapshot()
-    })
-
-    test('connect with error', () => {
-        const ormius = new Orm('file', { deferConnection: true })
-
-        mockConnection.connect = jest.fn((cb) => {
-            cb('error')
-        })
-        try {
-            ormius.connect()
-            expect(false).toBe(true)
-        } catch (e) {
-            expect(e).toBe('error')
-        }
     })
 })

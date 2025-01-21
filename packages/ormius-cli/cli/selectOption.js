@@ -1,6 +1,6 @@
-const readline = require('readline')
-const { TYPES } = require('ormius')
-const { RELATION_TYPES } = require('ormius/lib/types')
+import readline from 'readline'
+import { TYPES } from 'ormius'
+import { RELATION_TYPES } from 'ormius/lib/types'
 const input = process.stdin
 const output = process.stdout
 
@@ -9,15 +9,16 @@ const rl = readline.createInterface({
     output: output,
     prompt: '> '
 })
-const selectOption = {}
+export const selectOption = {}
 
 selectOption.selectIndex = 0
+console.log(TYPES, '====')
 selectOption.options = Object.values(TYPES).filter((value) => !RELATION_TYPES.includes(value))
 selectOption.selector = '*'
 selectOption.selects = []
 selectOption.inSelectType = true
 
-const handleLine = (line) => {
+export const handleLine = (line) => {
     selectOption.selects[selectOption.selects.length - 1].name = line
     selectOption.inSelectType = true
     input.setRawMode(true)
@@ -30,7 +31,7 @@ const askForName = (type) => {
     rl.question(`Type name for entry of type ${type}> `, handleLine)
 }
 
-const keyPressedHandler = (_, key) => {
+export const keyPressedHandler = (_, key) => {
     if (key && selectOption.inSelectType) {
         const optionLength = selectOption.options.length - 1
 
@@ -53,7 +54,7 @@ const keyPressedHandler = (_, key) => {
     }
 }
 
-const ansiColors = (text, color) => {
+export const ansiColors = (text, color) => {
     const colors = {
         green: 32,
         blue: 34,
@@ -113,11 +114,4 @@ selectOption.createOptionMenu = () => {
 
         output.write(padding + selectedOption + ending)
     }
-}
-
-module.exports = {
-    selectOption,
-    keyPressedHandler,
-    handleLine,
-    ansiColors
 }

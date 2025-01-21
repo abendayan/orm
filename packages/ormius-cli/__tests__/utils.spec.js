@@ -1,4 +1,4 @@
-const { ensureDirSync, capitalize } = require('../cli/utils')
+import { ensureDirSync, capitalize } from '../cli/utils'
 
 jest.mock('fs', () => ({
     mkdirSync: jest.fn((dirName) => {

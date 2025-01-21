@@ -1,5 +1,5 @@
-const { Query } = require('../lib/query')
-const { TYPES } = require('../lib/types')
+import { Query } from '../lib/query'
+import { TYPES } from '../lib/types'
 
 const model = {
     id: {

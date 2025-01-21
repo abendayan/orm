@@ -1,140 +1,107 @@
-let mockReturnValue = { test: 'value' }
+import { Model } from '../lib/model'
+import { Query } from '../lib/query'
 
-const mockQuery = {
-    findBy: jest.fn(),
-    where: jest.fn(),
-    updateBy: jest.fn(),
-    select: jest.fn(),
-    create: jest.fn(),
-    clean: jest.fn(),
-    execute: jest.fn().mockResolvedValue(mockReturnValue)
-}
+jest.mock('../lib/query') // Mock the Query class
 
-jest.mock('../lib/query', () => ({
-    Query: jest.fn().mockImplementation(() => {
-        return mockQuery
-    })
-}))
+describe('Model Class', () => {
+    let model
+    let mockQueryInstance
+    const modelName = 'test_model'
+    const modelSchema = { id: 'number', name: 'string' }
+    const initialValues = { id: 1, name: 'Test' }
 
-const { Model } = require('../lib/model')
-
-describe('Model class', () => {
     beforeEach(() => {
+        mockQueryInstance = {
+            findBy: jest.fn(),
+            where: jest.fn(),
+            updateBy: jest.fn(),
+            select: jest.fn(),
+            create: jest.fn(),
+            execute: jest.fn().mockResolvedValue([]),
+            clean: jest.fn()
+        }
+        Query.mockImplementation(() => mockQueryInstance)
+
+        model = new Model(modelName, modelSchema, { connection: {} }, initialValues)
+    })
+
+    afterEach(() => {
         jest.clearAllMocks()
     })
 
-    test('setValues', () => {
-        const connectionMock = { query: jest.fn((query, migrationId, cb) => {
-            cb()
-        }) }
-        const model = new Model('modelName', {}, connectionMock)
-        const mockValues = { value: 'test' }
-
-        expect(model.setValues(mockValues).values).toBe(mockValues)
+    test('should initialize with correct values', () => {
+        expect(model.modelName).toBe(modelName)
+        expect(model.values).toEqual(initialValues)
+        expect(Query).toHaveBeenCalledWith(modelName, {}, modelSchema)
     })
 
-    test('findBy', () => {
-        const connectionMock = { connection: {
-            query: jest.fn((query, migrationId, cb) => {
-                cb()
-            })
-        } }
-        const model = new Model('modelName', {}, connectionMock)
+    test('setValues should update the values', () => {
+        const newValues = { id: 2, name: 'Updated Test' }
 
-        model.findBy('column', 1)
-        expect(mockQuery.findBy.mock.calls).toMatchSnapshot()
+        model.setValues(newValues)
+        expect(model.values).toEqual(newValues)
     })
 
-    test('where', () => {
-        const connectionMock = { connection: {
-            query: jest.fn((query, migrationId, cb) => {
-                cb()
-            })
-        } }
-        const model = new Model('modelName', {}, connectionMock)
-
-        model.where('column', 1)
-        expect(mockQuery.where.mock.calls).toMatchSnapshot()
+    test('findBy should call Query.findBy with correct arguments and return the model', () => {
+        model.findBy('name', 'Test')
+        expect(mockQueryInstance.findBy).toHaveBeenCalledWith('name', 'Test')
+        expect(model).toBeInstanceOf(Model)
     })
 
-    test('updateBy with values', () => {
-        const connectionMock = { connection: {
-            query: jest.fn((query, migrationId, cb) => {
-                cb()
-            })
-        } }
-        const model = new Model('modelName', {}, connectionMock)
-
-        model.setValues({ test: 4 })
-        model.updateBy(3)
-        expect(mockQuery.updateBy.mock.calls).toMatchSnapshot()
+    test('where should call Query.where with correct arguments and return the model', () => {
+        model.where('id', 1)
+        expect(mockQueryInstance.where).toHaveBeenCalledWith('id', 1)
+        expect(model).toBeInstanceOf(Model)
     })
 
-    test('updateBy', () => {
-        const connectionMock = { connection: {
-            query: jest.fn((query, migrationId, cb) => {
-                cb()
-            })
-        } }
-        const model = new Model('modelName', {}, connectionMock)
+    test('updateBy should call Query.updateBy with correct arguments and return the model', () => {
+        const newValues = { name: 'Updated Test' }
 
-        model.updateBy(3, { column: 2 })
-        expect(mockQuery.updateBy.mock.calls).toMatchSnapshot()
+        model.updateBy(newValues)
+        expect(mockQueryInstance.updateBy).toHaveBeenCalledWith(initialValues, newValues)
+        expect(model).toBeInstanceOf(Model)
     })
 
-    test('select', () => {
-        const connectionMock = { connection: {
-            query: jest.fn((query, migrationId, cb) => {
-                cb()
-            })
-        } }
-        const model = new Model('modelName', {}, connectionMock)
+    test('select should call Query.select with correct arguments and return the model', () => {
+        const fields = ['id', 'name']
 
-        model.select(['email', 'id'])
-        expect(mockQuery.select.mock.calls).toMatchSnapshot()
+        model.select(fields)
+        expect(mockQueryInstance.select).toHaveBeenCalledWith(fields)
+        expect(model).toBeInstanceOf(Model)
     })
 
-    test('create', () => {
-        const connectionMock = { connection: {
-            query: jest.fn((query, migrationId, cb) => {
-                cb()
-            })
-        } }
-        const model = new Model('modelName', {}, connectionMock)
+    test('create should call Query.create with correct arguments and return the model', () => {
+        const fields = { id: 3, name: 'New Record' }
 
-        model.create({ test: 'value' })
-        expect(mockQuery.create.mock.calls).toMatchSnapshot()
+        model.create(fields)
+        expect(mockQueryInstance.create).toHaveBeenCalledWith(fields)
+        expect(model).toBeInstanceOf(Model)
     })
 
-    test('execute', async() => {
-        const connectionMock = { connection: {
-            query: jest.fn((query, migrationId, cb) => {
-                cb()
-            })
-        } }
-        const model = new Model('modelName', {}, connectionMock)
+    test('execute should call Query.execute and return mapped results for arrays', async() => {
+        const resultData = [{ id: 4, name: 'Result 1' }, { id: 5, name: 'Result 2' }]
 
-        await model.execute()
-        expect(mockQuery.clean).toHaveBeenCalled()
-        expect(model.values).toBe(mockReturnValue)
-    })
+        mockQueryInstance.execute.mockResolvedValue(resultData)
 
-    test('execute multiple results', async() => {
-        const connectionMock = { query: jest.fn((query, migrationId, cb) => {
-            cb()
-        }) }
-
-        mockReturnValue = [{ test: 'one' }, { test: 'two' }]
-        mockQuery.execute = jest.fn().mockResolvedValue(mockReturnValue)
-        const model = new Model('modelName', {}, connectionMock)
-
-        jest.spyOn(model, 'constructor').mockImplementation(() => ({
-            setValues: jest.fn()
-        }))
         const results = await model.execute()
 
-        expect(Array.isArray(results)).toBe(true)
-        expect(results.length).toBe(2)
-        expect(mockQuery.clean).toHaveBeenCalled()
+        expect(mockQueryInstance.execute).toHaveBeenCalled()
+        expect(mockQueryInstance.clean).toHaveBeenCalled()
+        expect(results).toHaveLength(resultData.length)
+        expect(results[0]).toBeInstanceOf(Model)
+        expect(results[0].values).toEqual(resultData[0])
+    })
+
+    test('execute should call Query.execute and return the model for single result', async() => {
+        const singleResult = { id: 6, name: 'Single Result' }
+
+        mockQueryInstance.execute.mockResolvedValue(singleResult)
+
+        const result = await model.execute()
+
+        expect(mockQueryInstance.execute).toHaveBeenCalled()
+        expect(mockQueryInstance.clean).toHaveBeenCalled()
+        expect(result).toBeInstanceOf(Model)
+        expect(result.values).toEqual(singleResult)
     })
 })

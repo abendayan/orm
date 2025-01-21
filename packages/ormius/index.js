@@ -1,9 +1,9 @@
-const { Orm } = require('./lib/ormius')
-const { TYPES, RELATION_TYPES } = require('./lib/types')
-const { Model } = require('./lib/model')
-const { Migration } = require('./lib/migration')
+import { Orm } from './lib/ormius'
+import { TYPES, RELATION_TYPES } from './lib/types'
+import { Model } from './lib/model'
+import { Migration } from './lib/migration'
 
-module.exports = {
+export default {
     Orm,
     Model,
     TYPES,

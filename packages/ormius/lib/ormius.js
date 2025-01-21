@@ -1,7 +1,7 @@
-const fs = require('fs')
-const mysql = require('mysql')
+import fs from 'fs'
+import mysql from 'mysql'
 
-class Orm {
+export class Orm {
     constructor(configFile, params = {}) {
         if (!configFile) {
             throw new Error('The config file is required')
@@ -30,5 +30,3 @@ class Orm {
         this.connection.end()
     }
 }
-
-module.exports.Orm = Orm

@@ -1,4 +1,4 @@
-const TYPES = {
+export const TYPES = {
     INT: 'int',
     STRING: 'string',
     BOOLEAN: 'boolean',
@@ -6,9 +6,5 @@ const TYPES = {
     HAS_MANY: 'has_many'
 }
 
-const RELATION_TYPES = [TYPES.BELONGS_TO, TYPES.HAS_MANY]
+export const RELATION_TYPES = [TYPES.BELONGS_TO, TYPES.HAS_MANY]
 
-module.exports = {
-    TYPES,
-    RELATION_TYPES
-}

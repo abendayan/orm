@@ -1,6 +1,6 @@
-const fs = require('fs')
+import fs from 'fs'
 
-const ensureDirSync = (dirpath) => {
+export const ensureDirSync = (dirpath) => {
     try {
         return fs.mkdirSync(dirpath)
     } catch (err) {
@@ -10,17 +10,11 @@ const ensureDirSync = (dirpath) => {
     }
 }
 
-const capitalize = (s) => {
+export const capitalize = (s) => {
     return s[0].toUpperCase() + s.slice(1)
 }
 
-const FOLDERS = {
+export const FOLDERS = {
     MODEL: './models',
     MIGRATION: './migrations'
-}
-
-module.exports = {
-    ensureDirSync,
-    capitalize,
-    FOLDERS
 }

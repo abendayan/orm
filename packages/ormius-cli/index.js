@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const arg = require('arg')
-const { runMigration } = require('./cli/runMigration')
-const { generateModel } = require('./cli/buildModel')
+import arg from 'arg'
+import { runMigration } from './cli/runMigration'
+import { generateModel } from './cli/buildModel'
 
 const args = arg({
     // Types

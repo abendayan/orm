@@ -1,6 +1,6 @@
-const { TYPES, RELATION_TYPES } = require('./types')
+import { TYPES, RELATION_TYPES } from './types'
 
-class Query {
+export class Query {
     constructor(modelName, connection, model) {
         this.modelName = modelName
         this.connection = connection
@@ -171,8 +171,4 @@ class Query {
             })
         })
     }
-}
-
-module.exports = {
-    Query
 }

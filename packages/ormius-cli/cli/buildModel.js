@@ -1,8 +1,8 @@
-const { ensureDirSync, FOLDERS, capitalize } = require('./utils')
-const { RELATION_TYPES } = require('ormius/lib/types')
-const fs = require('fs')
+import { ensureDirSync, FOLDERS, capitalize } from './utils'
+import { RELATION_TYPES } from 'ormius/lib/types'
+import fs from 'fs'
 
-const buildModel = (options, newModelName) => {
+export const buildModel = (options, newModelName) => {
     ensureDirSync(FOLDERS.MODEL)
     const migrateDate = `${Date.now()}`
 
@@ -63,13 +63,8 @@ const buildModel = (options, newModelName) => {
     fs.writeFileSync(`${FOLDERS.MODEL}/${newModelName}/${newModelName}.js`, dataModel, { flag: 'wx' })
 }
 
-const generateModel = (newModelName) => {
+export const generateModel = (newModelName) => {
     const { selectOption } = require('./selectOption')
 
     selectOption.init(buildModel, newModelName)
-}
-
-module.exports = {
-    generateModel,
-    buildModel
 }

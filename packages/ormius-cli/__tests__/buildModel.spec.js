@@ -1,45 +1,77 @@
-const mockSelectOption = {
-    init: jest.fn()
-}
+import { buildModel } from '../cli/buildModel'
+import { ensureDirSync, FOLDERS, capitalize } from '../cli/utils'
+import { RELATION_TYPES } from 'ormius/lib/types'
+import fs from 'fs'
 
-const mockUtils = {
+jest.mock('../cli/utils', () => ({
     ensureDirSync: jest.fn(),
-    capitalize: jest.fn(),
     FOLDERS: {
-        MODEL: './models',
-        MIGRATION: './migrations'
-    }
-}
+        MODEL: './mockModels',
+        MIGRATION: './mockMigrations',
+    },
+    capitalize: jest.fn((str) => str.charAt(0).toUpperCase() + str.slice(1)),
+}))
 
-const mockFs = {
-    writeFileSync: jest.fn()
-}
-
-jest.mock('fs', () => (
-    mockFs
-))
-
-const { generateModel, buildModel } = require('../cli/buildModel')
-
-jest.mock('../cli/selectOption', () => (
-    { selectOption: mockSelectOption }
-))
-
-jest.mock('../cli/utils', () => (
-    mockUtils
-))
+jest.mock('fs', () => ({
+    writeFileSync: jest.fn(),
+}))
 
 describe('buildModel', () => {
-    test('generateModel', () => {
-        generateModel('test')
-        expect(mockSelectOption.init.mock.calls).toMatchSnapshot()
+    beforeEach(() => {
+        jest.clearAllMocks()
     })
 
-    test('buildModel', () => {
-        Date.now = jest.fn(() => 1647098090769)
-        buildModel([{ type: 'string', name: 'test' }], 'modelTest')
-        expect(mockFs.writeFileSync.mock.calls).toMatchSnapshot()
-        expect(mockUtils.capitalize.mock.calls).toMatchSnapshot()
-        expect(mockUtils.ensureDirSync.mock.calls).toMatchSnapshot()
+    const options = [
+        { type: 'string', name: 'firstName' },
+        { type: 'number', name: 'age' },
+        { type: 'belongsTo', name: 'user' }, // RELATION_TYPE
+    ]
+
+    const newModelName = 'testModel'
+
+    test('should create necessary directories', () => {
+        buildModel(options, newModelName)
+
+        expect(ensureDirSync).toHaveBeenCalledWith(FOLDERS.MODEL)
+        expect(ensureDirSync).toHaveBeenCalledWith(FOLDERS.MIGRATION)
+        expect(ensureDirSync).toHaveBeenCalledWith(expect.stringContaining(FOLDERS.MIGRATION))
+        expect(ensureDirSync).toHaveBeenCalledWith(`${FOLDERS.MODEL}/${newModelName}`)
+    })
+
+    test('should write migration file with filtered options', () => {
+        buildModel(options, newModelName)
+
+        const migrationFilePath = `${FOLDERS.MIGRATION}/${expect.any(String)}/index.js`
+        const migrationContent = expect.stringContaining(
+            `this.createTable([{"type":"string","name":"firstName"},{"type":"number","name":"age"}])`
+        )
+
+        expect(fs.writeFileSync).toHaveBeenCalledWith(migrationFilePath, migrationContent, { flag: 'wx' })
+    })
+
+    test('should write model file with correct fields', () => {
+        buildModel(options, newModelName)
+
+        const modelFilePath = `${FOLDERS.MODEL}/${newModelName}/model.js`
+        const modelContent = expect.stringContaining(`
+          "firstName": {
+            "type": TYPES.STRING
+          },
+          "age": {
+            "type": TYPES.NUMBER
+          }
+        `)
+
+        expect(fs.writeFileSync).toHaveBeenCalledWith(modelFilePath, modelContent, { flag: 'wx' })
+    })
+
+    test('should write model class file with correct name and content', () => {
+        buildModel(options, newModelName)
+
+        const classFilePath = `${FOLDERS.MODEL}/${newModelName}/${newModelName}.js`
+        const classContent = expect.stringContaining(`class TestModel extends Model {`)
+
+        expect(fs.writeFileSync).toHaveBeenCalledWith(classFilePath, classContent, { flag: 'wx' })
+        expect(capitalize).toHaveBeenCalledWith(newModelName)
     })
 })

@@ -1,102 +1,109 @@
-const { Migration } = require('../lib/migration')
+import { Migration } from '../lib/migration'
 
-describe('migration', () => {
-    test('setMigrationId', () => {
-        const migration = new Migration()
+describe('Migration Class', () => {
+    let migration
+    let mockConnection
 
-        migration.setMigrationId('migrationTestId')
-        expect(migration.migrationId).toBe('migrationTestId')
+    beforeEach(() => {
+        // Mock the database connection
+        mockConnection = {
+            query: jest.fn((query, params, callback) => {
+                if (typeof callback === 'function') {
+                    callback(null) // Simulate a successful query
+                }
+            })
+        }
+
+        // Create an instance of Migration and set up initial state
+        migration = new Migration()
+        migration.setConnection(mockConnection)
+        migration.modelName = 'test_table'
     })
 
-    test('markAsRan', () => {
-        const migration = new Migration()
-        const connectionMock = { query: jest.fn((query, migrationId, cb) => {
-            cb()
-        }) }
+    afterEach(() => {
+        jest.clearAllMocks()
+    })
 
-        migration.setMigrationId('migrationId')
-        migration.setConnection(connectionMock)
+    test('should set the migration ID', () => {
+        migration.setMigrationId('migration_001')
+        expect(migration.migrationId).toBe('migration_001')
+    })
+
+    test('should mark migration as ran', () => {
+        migration.setMigrationId('migration_001')
         migration.markAsRan()
-        expect(connectionMock.query.mock.calls).toMatchSnapshot()
+        expect(mockConnection.query).toHaveBeenCalledWith(
+            'INSERT INTO migrations (migration) VALUES (?)',
+            'migration_001',
+            expect.any(Function)
+        )
     })
 
-    test('markAsRan with error', () => {
-        const migration = new Migration()
-        const connectionMock = { query: jest.fn((query, migrationId, cb) => {
-            cb('error')
-        }) }
+    test('should throw an error if markAsRan query fails', () => {
+        mockConnection.query.mockImplementationOnce((query, params, callback) => {
+            callback(new Error('Query failed'))
+        })
 
-        migration.setMigrationId('migrationId')
-        migration.setConnection(connectionMock)
-        try {
-            migration.markAsRan()
-            expect(false).toBe(true)
-        } catch (e) {
-            expect(e).toBe('error')
-        }
+        migration.setMigrationId('migration_001')
+        expect(() => migration.markAsRan()).toThrow('Query failed')
     })
 
-    test('addColumn', () => {
-        const migration = new Migration()
+    test('should add a column successfully', () => {
+        const successCallback = jest.fn()
 
-        migration.modelName = 'modelName'
-        const connectionMock = { query: jest.fn((query, cb) => {
-            cb()
-        }) }
-
-        migration.setMigrationId('migrationId')
-        migration.setConnection(connectionMock)
-        migration.addColumn('columnTest', 'string')
-        expect(connectionMock.query.mock.calls).toMatchSnapshot()
+        mockConnection.query.mockImplementationOnce((query, callback) => {
+            callback(null)
+            successCallback()
+        })
+        migration.addColumn('new_column', 'VARCHAR(255)')
+        expect(mockConnection.query).toHaveBeenCalledWith(
+            'ALTER TABLE test_table ADD new_column VARCHAR(255)',
+            expect.any(Function)
+        )
+        expect(successCallback).toHaveBeenCalled()
     })
 
-    test('addColumn with error', () => {
-        const migration = new Migration()
-        const connectionMock = { query: jest.fn((query, cb) => {
-            cb('error')
-        }) }
+    test('should handle error when adding a column', () => {
+        mockConnection.query.mockImplementationOnce((query, callback) => {
+            callback(new Error('Query failed'))
+        })
 
-        migration.modelName = 'modelName'
-
-        migration.setMigrationId('migrationId')
-        migration.setConnection(connectionMock)
-        try {
-            migration.addColumn('columnTest', 'string')
-            expect(false).toBe(true)
-        } catch (e) {
-            expect(e).toBe('error')
-        }
+        expect(() => migration.addColumn('new_column', 'VARCHAR(255)')).toThrow('Query failed')
+        expect(mockConnection.query).toHaveBeenCalledWith(
+            'ALTER TABLE test_table ADD new_column VARCHAR(255)',
+            expect.any(Function)
+        )
     })
 
-    test('createTable', () => {
-        const migration = new Migration()
+    test('should create a table', () => {
+        const newTable = [
+            { name: 'id', type: 'INT AUTO_INCREMENT PRIMARY KEY' },
+            { name: 'name', type: 'VARCHAR(255)' }
+        ]
+        const successCallback = jest.fn()
 
-        migration.modelName = 'modelName'
-        const connectionMock = { query: jest.fn((query, cb) => {
-            cb()
-        }) }
-
-        migration.setMigrationId('migrationId')
-        migration.setConnection(connectionMock)
-        migration.createTable([{ type: 'string', name: 'column' }, { type: 'boolean', name: 'second_column' }])
-        expect(connectionMock.query.mock.calls).toMatchSnapshot()
+        mockConnection.query.mockImplementationOnce((query, callback) => {
+            callback(null)
+            successCallback()
+        })
+        migration.createTable(newTable)
+        expect(mockConnection.query).toHaveBeenCalledWith(
+            'CREATE TABLE test_table (id INT AUTO_INCREMENT PRIMARY KEY,name VARCHAR(255))',
+            expect.any(Function)
+        )
+        expect(successCallback).toHaveBeenCalled()
     })
 
-    test('createTable with error', () => {
-        const migration = new Migration()
-        const connectionMock = { query: jest.fn((query, cb) => {
-            cb('error')
-        }) }
+    test('should throw an error if createTable query fails', () => {
+        const newTable = [
+            { name: 'id', type: 'INT AUTO_INCREMENT PRIMARY KEY' },
+            { name: 'name', type: 'VARCHAR(255)' }
+        ]
 
-        migration.modelName = 'modelName'
+        mockConnection.query.mockImplementationOnce((query, callback) => {
+            callback(new Error('Query failed'))
+        })
 
-        migration.setMigrationId('migrationId')
-        migration.setConnection(connectionMock)
-        try {
-            migration.createTable([{ type: 'string', name: 'column' }, { type: 'boolean', name: 'second_column' }])
-            expect(false).toBe(true)
-        } catch (e) {
-            expect(e).toBe('error')
-        }
+        expect(() => migration.createTable(newTable)).toThrow('Query failed')
     })
 })

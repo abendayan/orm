@@ -1,6 +1,6 @@
-const { Query } = require('./query')
+import { Query } from './query'
 
-class Model {
+export class Model {
     #query
     #model
     #connection
@@ -49,15 +49,11 @@ class Model {
         this.#query.clean()
         if (Array.isArray(result)) {
             return result.map((oneResult) => {
-                return new this.constructor(this.#connection).setValues(oneResult)
+                return new this.constructor(this.modelName, this.#model, this.#connection).setValues(oneResult)
             })
         } else {
             this.values = result
             return this
         }
     }
-}
-
-module.exports = {
-    Model
 }

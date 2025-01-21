@@ -1,4 +1,4 @@
-class Migration {
+export class Migration {
     #connection
     modelName
     migrationId
@@ -23,7 +23,9 @@ class Migration {
     addColumn(columnName, columnType) {
         console.log('add column', this.modelName, columnName, columnType)
         this.#connection.query(`ALTER TABLE ${this.modelName} ADD ${columnName} ${columnType}`, (error) => {
+            console.log('addColumn!!!', error)
             if (error) {
+                console.log('addColumnError')
                 console.log('error', error)
                 throw error
             }
@@ -39,8 +41,4 @@ class Migration {
             }
         })
     }
-}
-
-module.exports = {
-    Migration
 }
